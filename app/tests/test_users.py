@@ -130,3 +130,33 @@ class TestUserService(BaseTestCase):
             self.assertEqual(user2.username, data["user"][1].get("username"))
             self.assertEqual(user2.email, data["user"][1].get("email"))
             self.assertEqual(user2.id, data["user"][1].get("id"))
+
+    def test_main_no_users(self):
+        """如果一个用户都没有，报错"""
+        response = self.client.get("/")
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("No users!", response.data.decode())
+
+    def test_main_with_users(self):
+        """如果有多用户的情况"""
+        db.session.add(User("hwt", "hwt@163.com"))
+        db.session.add(User("hwt1", "hwt1@163.com"))
+        db.session.commit()
+        response = self.client.get("/")
+        self.assertEqual(response.status_code, 200)
+        self.assertNotIn(b"No users!", response.data)
+        self.assertIn(b"hwt", response.data)
+        self.assertIn(b"hwt1", response.data)
+
+    def test_main_add_users(self):
+        """确保首页页面可以添加用户"""
+        with self.client:
+            response = self.client.post(
+                "/",
+                data=json.dumps({"username": "hwt", "email": "hwt@163.com"}),
+                content_type="application/json",
+            )
+            data = json.loads(response.data.decode())
+            self.assertEqual(response.status_code, 200)
+            self.assertIn("hwt@163.com was add.", data["message"])
+            self.assertIn("success", data["status"])
