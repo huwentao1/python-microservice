@@ -6,6 +6,28 @@ from app import create_app, db
 app = create_app()
 
 manage = Manager(app)
+import coverage
+
+COV = coverage.coverage(branch=True, include="app/*", omit=["app/tests/*"])
+
+COV.start()
+
+
+@manage.command
+def cov():
+    """执行代码覆盖组件"""
+    tests = unittest.TestLoader().discover(start_dir="app/tests", pattern="test_*.py")
+
+    result = unittest.TextTestRunner(verbosity=2).run(tests)
+    if result.wasSuccessful():
+        COV.stop()
+        COV.save()
+        print("代码覆盖结果为: ")
+        COV.report()
+        COV.html_report()
+        COV.erase()
+        return 0
+    return 1
 
 
 @manage.command

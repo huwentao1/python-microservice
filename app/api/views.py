@@ -17,7 +17,11 @@ def index():
         userinfo = request.get_json()
         user = User(userinfo.get("username"), userinfo.get("email"))
         db.session.add(user)
-        return {"status": "success", "message": "%s was add." % userinfo.get("email")}, 200
+        return (
+            {"status": "success", "message": "%s was add."
+                                             % userinfo.get("email")},
+            200,
+        )
     users = User.query.all()
     return render_template("index.html", users=users)
 
@@ -36,7 +40,8 @@ def add_user():
         return {"status": "fail", "message": "Email can not null."}, 400
     user = User.query.filter_by(email=email).all()
     if user:
-        return {"status": "fail", "message": "Sorry. That email already exists."}, 400
+        return {"status": "fail",
+                "message": "Sorry. That email already exists."}, 400
     user = User(username=username, email=email)
     db.session.add(user)
     db.session.commit()

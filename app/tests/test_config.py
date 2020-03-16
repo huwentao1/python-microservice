@@ -10,6 +10,7 @@ class TestDevelopmentConfig(TestCase):
         return app
 
     def test_app_is_development(self):
+        """确保开发环境的正确"""
         self.assertTrue(app.config["SECRET_KEY"] == "secret")
         self.assertTrue(app.config["DEBUG"] is True)
         self.assertFalse(current_app is None)
