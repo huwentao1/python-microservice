@@ -52,6 +52,7 @@ def add_user():
 def get_user(id):
     """查询用户"""
     user = User.query.filter_by(id=id).one_or_none()
+
     if user:
         return (
             {
