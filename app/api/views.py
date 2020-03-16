@@ -15,7 +15,49 @@ def ping_ping():
 def add_user():
     """添加用户"""
     userinfo = request.get_json()
-    user = User(username=userinfo.get("username"), email=userinfo.get("email"))
+    if not userinfo:
+        return {"status": "fail", "message": "data is not null."}, 400
+    username = userinfo.get("username")
+    if not username:
+        return {"status": "fail", "message": "Username can not null."}, 400
+    email = userinfo.get("email")
+    if not email:
+        return {"status": "fail", "message": "Email can not null."}, 400
+    user = User.query.filter_by(email=email).all()
+    if user:
+        return {"status": "fail", "message": "Sorry. That email already exists."}, 400
+    user = User(username=username, email=email)
     db.session.add(user)
     db.session.commit()
     return {"status": "success", "message": "%s was add." % user.email}, 200
+
+
+@users_blueprint.route("/users/<id>", methods=["GET"])
+def get_user(id):
+    """查询用户"""
+    user = User.query.filter_by(id=id).one_or_none()
+    if user:
+        return (
+            {
+                "status": "success",
+                "message": {"username": user.username, "email": user.email},
+            },
+            200,
+        )
+    return {"status": "fail", "message": "%s id not exists." % id}, 400
+
+
+@users_blueprint.route("/users", methods=["GET"])
+def get_all_users():
+    user = User.query.all()
+    data = []
+    for item in user:
+        data.append(
+            {
+                "username": item.username,
+                "id": item.id,
+                "email": item.email,
+                "created_at": item.created_at,
+            }
+        )
+    return {"status": "success", "user": data}, 200
