@@ -12,4 +12,3 @@ services:
                         - APP_SETTINGS=app.config.DevelopmentConfig
                         - DATABASE_DEV_URL=mysql+pymysql://root:123456@192.168.50.78:3306/users_dev
                         - DATABASE_TEST_URL=mysql+pymysql://root:123456@192.168.50.78:3306/users_test
-                        - DATABASE_PROJECT_URL=mysql+pymysql://root:123456@192.168.50.78:3306/users_pro
