@@ -16,7 +16,7 @@ class TestDevelopmentConfig(TestCase):
         self.assertFalse(current_app is None)
         self.assertTrue(
             app.config["SQLALCHEMY_DATABASE_URI"]
-            == "mysql+pymysql://root:123456@192.168.50.78:3306/users_dev"
+            == "mysql+pymysql://root:root321@users-db:3306/users_dev"
         )
 
 
@@ -31,7 +31,7 @@ class TestTestingConfig(TestCase):
         self.assertTrue(app.config["TESTING"])
         self.assertTrue(
             app.config["SQLALCHEMY_DATABASE_URI"]
-            == "mysql+pymysql://root:123456@192.168.50.78:3306/users_test"
+            == "mysql+pymysql://root:root321@users-db:3306/users_test"
         )
 
 
